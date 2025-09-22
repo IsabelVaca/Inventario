@@ -1,0 +1,16 @@
+15
+1001|Salvo multiuso|32.20|35.55|3
+1002|Detergente Ariel|21.10|24.00|5
+1003|Pan Integral|22.50|28.90|8
+1004|Arroz 900g|27.50|34.00|56
+1005|Huevos 12 pzas|38.90|47.00|23
+1006|Salvo liquido|16.53|18.25|17
+1007|Detergente Roma|34.66|38.50|20
+1008|Detergente maestro limpio|16.13|17.77|4
+1009|Detergente carisma|38.21|42.05|20
+1010|Zote|5.33|5.86|10
+1011|Cloralex|30.42|33.46|7
+1012|Suavitel|14.41|14.92|11
+1013|Downy|11.67|12.88|5
+1014|Fabuloso|22.50|24.75|15
+1015|Pinol|14.41|15.88|3
