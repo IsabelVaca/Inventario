@@ -8,7 +8,7 @@ Desplegar inventario
 
 
 
-#Competencias
+# Competencias
 
 
 SICT0301: Evalúa los componentes
