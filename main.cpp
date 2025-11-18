@@ -11,11 +11,21 @@
 #include "pedido.h"
 using namespace std;
 
+/*
+*
+* Este proyecto permite guardar un registro de un inventario de una tienda y acciones relacionadas.
+*
+*
+*
+*/
+
 //Vector con objetos tipo producto
 vector<Producto> inventario;
-
+//estructura: queue
 queue<Pedido> pedidos;
+//variable global para registro de pedidos
 int ultimoId = 0;
+
 
 
 
@@ -63,16 +73,25 @@ bool loadFile(const std::string& filename){
     }
     return true;
 }
-
-//Se despliegan los productos en el inventario
+/*
+ * Se despliegan los productos del inventario
+ *@param:vector<Producto> &v
+ *@return:
+ *
+ */
 void printInventario(vector<Producto> &v ){
     int size = v.size();
     for(int i =0; i<size; i++){
         cout << v[i].toString() << '\n';
     }
 }
+/*
+ * busca producto por id en el inventario, regresa ptr o null
+ *@param:vector<Producto>& inventario, int id
+ *@return: Producto*
+ *
+ */
 
-//busca producto por id, regresa ptr o null
 Producto* buscarProducto(vector<Producto>& inventario, int id) {
     for (int i = 0; i < inventario.size(); ++i) {
         if (inventario[i].getId() == id) {
@@ -81,6 +100,12 @@ Producto* buscarProducto(vector<Producto>& inventario, int id) {
     }
     return nullptr;
 }
+/*
+ * imprime contenido de la queue (pedidos activos)
+ *@param:queue<Pedido>& q
+ *@return:
+ *
+ */
 
 void printQueue(const queue<Pedido>& q) {
     if (q.empty()) {
@@ -95,7 +120,12 @@ void printQueue(const queue<Pedido>& q) {
         }
     }
 
-
+/*
+ * maneja las ordenes que llegan a la tienda y las va procesando de manera FIFO.
+ *@param:queue<Pedido>& pedidos, vector<Producto>& inventario, int& ultimoId
+ *@return:
+ *
+ */
 void Orders(queue<Pedido>& pedidos, vector<Producto>& inventario, int& ultimoId) {
    
     printInventario(inventario);
@@ -192,44 +222,38 @@ void Orders(queue<Pedido>& pedidos, vector<Producto>& inventario, int& ultimoId)
 
 
 
+/*
+ * sort by costo = 1, stock = 2, precio venta = 3
+ *@param:vector<Producto>&A, vector<Producto>&B, int low, int mid, int high, int sort
+ *@return:
+ *
+ */
 
-//sort by costo = 1, stock = 2, precio venta = 3
 void mergeArr(vector<Producto>&A, vector<Producto>&B, int low, int mid, int high, int sort ){
     int i = low;
     int j = mid+1;
     int k = low;
     
-    
-    //ver como hacer ifs mas cortos
-    while(i<=mid && j<= high){
-        if(sort == 1){
-            if(A[i].getCosto()< A[j].getCosto()){
-                B[k++] = A[i++];
-                
+    switch (sort) {
+        case 1: // costo
+            while (i<=mid && j<=high) {
+                if (A[i].getCosto() <= A[j].getCosto()) B[k++] = A[i++];
+                else                                     B[k++] = A[j++];
             }
-            else{
-                B[k++] = A[j++];
+            break;
+        case 2: // stock
+            while (i<=mid && j<=high) {
+                if (A[i].getStock() <= A[j].getStock()) B[k++] = A[i++];
+                else                                     B[k++] = A[j++];
             }
+            break;
+        default: // precio venta
+            while (i<=mid && j<=high) {
+                if (A[i].getPrecioVenta() <= A[j].getPrecioVenta()) B[k++] = A[i++];
+                else                                                 B[k++] = A[j++];
+            }
+            break;
         }
-        else if(sort == 2){
-            if(A[i].getStock()< A[j].getStock()){
-                B[k++] = A[i++];
-                
-            }
-            else{
-                B[k++] = A[j++];
-            }
-        }
-        else if(sort == 3){
-            if(A[i].getPrecioVenta()< A[j].getPrecioVenta()){
-                B[k++] = A[i++];
-                
-            }
-            else{
-                B[k++] = A[j++];
-            }
-        }
-    }
         
     if(i>mid){
         for(;j<=high;j++){
@@ -247,6 +271,7 @@ void mergeArr(vector<Producto>&A, vector<Producto>&B, int low, int mid, int high
     }
         
 }
+
 
 void mergeSplit(vector<Producto> &A,vector <Producto> &B, int low, int high, int sort){
     if((high-low)<1){
@@ -276,19 +301,83 @@ void mergeSort(vector<Producto> &s, int sort){
     
     
 }
+/*
+ * agrega productos al inventario
+ *@param:vector<Producto>
+ *@return:bool (regresa bool para verificar que se haya ingresado de manera correcta)
+ *
+ */
+
+bool addProduct(vector<Producto> &v){
+    string nombre;
+    cout << "Ingrese el nombre del producto: \n";
+    cin.ignore();
+    getline(cin,nombre);//para poder ingresar nombres con espacios
+    double costo;
+    cout << "Ingrese el costo del producto (con dos decimales) \n";
+    cin >> costo;
+    double precioVenta;
+    cout << "Ingrese el precio de venta del producto (con dos decimales) \n";
+    cin >> precioVenta;
+    int stock;
+    cout << "Ingrese el la cantidad en stock del producto (numero entero) \n";
+    cin >> stock;
+    //abre el archivo original y crea uno temporal para reescribir el antiguo
+    //pero con el producto nuevo
+    ofstream aux;
+    ifstream lect;
+    aux.open("auxiliar.txt", ios::out);
+    lect.open("Inventario.txt", ios::in);
+    
+    if(aux.is_open() && lect.is_open()){
+        //lee la primer linea que es el num de productos, con esto calcula el nuevo id
+        int n;
+        lect.seekg(0);
+        string l;
+        if (!getline(lect, l)) {
+               std::cout << "Error leyendo el número de productos\n";
+               return false;
+           }
+        n = stoi(l);
+        //nuevo id
+        n+=1;
+        aux<<n<< '\n';
+
+        string linea;
+        while (std::getline(lect, linea)) {
+            aux << linea << '\n';
+        }
+        //string del nuevo producto
+        string s = to_string(n)+"|"+nombre+"|"+to_string(costo)
+        +"|"+to_string(precioVenta)+"|"+to_string(stock);
+        //se agrega al inventario
+        inventario.push_back( Producto(n, nombre, costo, precioVenta, stock));
+        aux << s << '\n';
+        
+        aux.close();
+        lect.close();
+        std::remove("Inventario.txt");
+        std::rename("auxiliar.txt", "Inventario.txt");
+        return true;
+        
+        
+    }else{
+        cout<<"no se pudo abrir"<<endl;
+        return false;
+    }
+}
     
 
-    
-    
-
+//menu
 void menu() {
     cout << "\nMenu:\n";
     cout << "1. Desplegar inventario\n";
     cout << "2. Ordenar inventario por costo\n";
     cout << "3. Ordenar inventario por stock\n";
     cout << "4. Ordenar inventario por precio de venta\n";
-    cout << "5. Crear pedido\n";
-    cout << "6. Salir\n";
+    cout << "5. Registrar, enviar o consultar pedido\n";
+    cout << "6. Agregar nuevo producto al inventario\n";
+    cout << "7. Salir\n";
     cout << "Selecciona una opcion: \n";
     cout << "(Si selecciona una opcion y no sucede nada vuelva a ingresar el numero)\n";
 }
@@ -342,6 +431,15 @@ int main(int argc, const char * argv[]) {
                 break;
             }
             case 6:{
+                if(addProduct(inventario)){
+                    cout<< "Se agregó el producto correctamente";
+                }
+                else{
+                    cout<< "No se agregó correctamente";
+                }
+                break;
+            }
+            case 7:{
                 cout << "Saliendo del programa\n";
                 return 0;
             }
