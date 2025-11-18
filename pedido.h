@@ -8,15 +8,22 @@
 #include <string>
 #include <sstream>
 using namespace std;
+/*
+ * Clase Pedido, esta clase registra los pedidos, estos pedidos serán almacenados en una queue hasta ser enviados.
+ *Atributos: IDpedido,nombre de cliente, IDproducto, cantidad de unidades.
+ * metodos: getters, setters, to string
+ */
 
 class Pedido{
 private:
+    //atrbutos
     int IDpedido;
     string cliente;
     int IDproducto;
     int cantidad;
     
 public:
+    //constructores
     Pedido();
     Pedido(int iped, string cl, int iprod, int ca);
     
@@ -34,7 +41,7 @@ public:
     
     
 };
-
+//constructores
 Pedido::Pedido()
 : IDpedido(0), cliente("noname"), IDproducto(0), cantidad(0)
 {}
@@ -78,7 +85,11 @@ void Pedido::setIDproducto(int iprod){
 void Pedido::setCantidad(int ca){
     cantidad = ca;
 }
-
+/*
+*tostring
+*@param:
+*@return: string
+*/
 string Pedido::toString() const{
     stringstream salida;
     salida << "IDpedido: " << IDpedido
