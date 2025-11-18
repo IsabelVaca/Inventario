@@ -10,7 +10,13 @@
 #include <sstream>
 using namespace std;
 
-//Clase Producto
+/*
+ *Clase Producto,tiene atributos: id, nombre de producto, costo, precio de venta, cantidad en stock.
+ *Metodos: getters, setters, tostring
+ *Estos objetos seran guardados en un arreglo en el main.
+ *
+ */
+
 class Producto{
 private:
     //atributos privados
@@ -103,7 +109,11 @@ void Producto::setPrecioVenta(double v) {
 void Producto::setStock(int s) {
     stock = s;
 }
-
+/*
+*tostring
+*@param:
+*@return: string
+*/
 string Producto::toString() {
     stringstream salida;
     salida << "ID: " << id
