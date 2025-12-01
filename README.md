@@ -29,8 +29,8 @@ SICT0301: Evalúa los componentes
 
 Complejidad del tiempo O(n):
 
-push O(1)
-pop O(1)
+enqueue O(1)
+dequeue O(1)
 Para verificar el id del producto al hacer la orden O(n)
 Print queue O(n)
 
